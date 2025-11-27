@@ -1,0 +1,744 @@
+ <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suéteres - Junior D'Flores</title>
+
+  <!-- Fuentes y estilos externos -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    body { font-family: 'verdana', sans-serif; margin:0; padding:0; background:#fdfdfd; color:#333; line-height:1.6; }
+
+    /* ====== ENCABEZADO CURVADO CORAL ====== */
+    header {
+      position: relative;
+      background: #fff;
+      overflow: visible;
+      height: 180px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      padding-bottom: 20px;
+    }
+
+    .fondo-linea {
+      position: absolute;
+      top: 0;
+      left: 0;          /* Limita el SVG al borde izquierdo */
+      width: 100%;      /* No sobresalga del header */
+      height: 100%;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .fondo-linea path {
+      fill: none;
+      stroke: url(#gradCoral);
+      stroke-width: 60;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-opacity: 0.9;
+    }
+
+    .titulo-logo {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .titulo {
+      font-family: 'Playfair Display', serif;
+      font-size: 4em;
+      letter-spacing: 5px;
+      color: #222;
+      text-transform: uppercase;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.15);
+      margin: 0;
+    }
+
+    .logo img {
+      width: 130px;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    /* ====== MENÚ ====== */
+    nav {
+      background: #FF8C8C;
+      padding: 12px 0;
+      text-align: center;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    }
+
+    nav a {
+      color: #fff;
+      margin: 0 18px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.05em;
+      transition: 0.3s;
+      position: relative;
+      text-transform: uppercase;
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: #FFE8DB;
+      transition: width 0.3s;
+    }
+
+    nav a:hover {
+      color: #FFE8DB;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    /* ====== SECCIONES ====== */
+    section { padding:60px 20px; max-width:1100px; margin:auto; }
+    section h2 { text-align:center; margin-bottom:25px; font-size:2.2em; position:relative; }
+    section h2::after { content:""; display:block; width:80px; height:4px; background:#F08787; margin:10px auto 0; border-radius:2px; }
+
+    .productos { display:grid; grid-template-columns:repeat(3, 1fr); gap:30px; }
+    .card { background:transparent; padding:0; text-align:center; cursor:pointer; transition:0.3s; }
+    .card:hover { transform:translateY(-5px); }
+    .card img { max-width:80%; height:auto; border-radius:12px; object-fit:cover; margin:0 auto; display:block; }
+    .card h3 { margin:10px 0 5px; }
+    .precio { font-weight:600; color:#E07A7A; }
+    .back-btn { display:block; margin:40px auto 0; padding:12px 25px; background:#E07A7A; color:#fff; border-radius:10px; text-decoration:none; text-align:center; width:max-content; }
+    .back-btn:hover { background:#F28C8C; }
+
+    /* ====== MODAL ====== */
+    .modal { display:none; position:fixed; z-index:2000; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); overflow:auto; padding-top:40px; }
+    .modal-content { background:#fff; margin:auto; padding:20px; border-radius:15px; max-width:900px; display:flex; flex-direction:row; gap:20px; position:relative; flex-wrap:wrap; }
+    .close { position:absolute; top:10px; right:20px; font-size:28px; cursor:pointer; }
+    .close:hover { color:#E07A7A; }
+    .carousel { position:relative; flex:1; min-width:250px; text-align:center; }
+    .carousel img { width:80%; max-width:400px; height:auto; border-radius:12px; object-fit:cover; display:block; margin:0 auto; }
+    .prev, .next { cursor:pointer; position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:#fff; padding:10px; border-radius:50%; font-size:20px; user-select:none; }
+    .prev { left:10px; }
+    .next { right:10px; }
+    .modal-details { flex:1; min-width:250px; }
+    .modal-details h3 { margin:6px 0; }
+    .modal-details p { margin:6px 0; color:#666; }
+    .modal-details .precio { font-size:1.3em; font-weight:bold; color:#E07A7A; margin:12px 0; }
+    .colors, .sizes { display:flex; gap:10px; margin-top:8px; flex-wrap:wrap; }
+    .color-swatch { width:50px; height:50px; border-radius:8px; overflow:hidden; cursor:pointer; border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,.15); transition:0.2s; }
+    .color-swatch img { width:100%; height:100%; object-fit:cover; }
+    .color-swatch.active { outline:3px solid #E07A7A; }
+    .size-btn { padding:8px 12px; border:1px solid #ddd; border-radius:8px; background:#fff; cursor:pointer; font-weight:600; transition:0.2s; }
+    .size-btn.active { background:#E07A7A; color:#fff; border-color:#E07A7A; }
+
+    /* ====== FOOTER ====== */
+    footer { background:#F08787; color:#fff; text-align:center; padding:40px 20px; margin-top:40px; }
+
+    /* ====== REDES FLOTANTES ====== */
+    .social-fixed {
+      position: fixed;
+      right: 20px;
+      top: 40%;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      z-index: 999;
+    }
+
+    .social-fixed a img { width: 50px; height: 50px; object-fit: contain; }
+
+    /* ====== BOTÓN SUBIR ====== */
+    #scrollTop { position:fixed; bottom:20px; right:20px; z-index:999; display:none; align-items:center; justify-content:center; width:50px; height:50px; background:#F08787; color:#fff; border-radius:50%; font-size:1.5em; cursor:pointer; box-shadow:0 3px 10px rgba(0,0,0,0.2); transition:0.3s; }
+    #scrollTop:hover { background:#FFE8DB; color:#333; }
+
+    /* ====== RESPONSIVIDAD ====== */
+    @media (max-width:1024px) { .productos { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width:800px){ .modal-content { flex-direction: column; max-width:92%; } nav a { margin:0 8px; } .productos { grid-template-columns:1fr; } }
+    @media (max-width:500px){
+      header { flex-direction: column; align-items:center; text-align:center; padding:15px; }
+      .titulo { font-size:2.5em; }
+      .logo img { width:110px; height:110px; }
+      nav a { font-size:0.95em; display:block; margin:5px 0; }
+      .card img { max-width:95%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ENCABEZADO CURVADO CORAL -->
+  <header>
+    <svg class="fondo-linea" viewBox="0 0 1600 180" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="gradCoral" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#FF8C8C" stop-opacity="0.1"/>
+          <stop offset="15%" stop-color="#FF8C8C" stop-opacity="0.5"/>
+          <stop offset="50%" stop-color="#FF8C8C" stop-opacity="0.6"/>
+          <stop offset="85%" stop-color="#FF8C8C" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#FF8C8C" stop-opacity="0.1"/>
+        </linearGradient>
+      </defs>
+      <path d="M0,140 C300,10 600,170 900,90 S1300,60 1600,140" />
+    </svg>
+
+    <div class="titulo-logo">
+      <h1 class="titulo">Junior D'Flores</h1>
+      <div class="logo">
+        <img src="logo/logo.png" alt="Logo de la tienda">
+      </div>
+    </div>
+  </header>
+
+  <!-- MENÚ -->
+  <nav>
+    <a href="index.html">Inicio</a>
+    <a href="mujer.html">Categorías</a>
+  </nav>
+
+ <section>
+    <h2>Suéteres</h2>
+    <div class="productos">
+      <!-- Aquí van todas las cards tal como tu código original -->
+           <!-- CARD 1 -->
+    
+
+<!-- CARD 3 -->
+    <div class="card" 
+         data-nombre="Sudadera" 
+         data-descripcion="Sudadera tejido de punto con cierre ." 
+         data-precio="$120" 
+         data-imagenes="sudadera/sudadera1.jpg,sudadera/sudadera2.jpg,sudadera/sudadera3.jpg,sudadera/sudadera4.jpg,sudadera/sudadera5.jpg,sudadera/sudadera6.jpg,sudadera/sudadera7.jpg,sudadera/sudadera8.jpg,sudadera/sudadera9.jpg,sudadera/sudadera10.jpg,sudadera/sudadera11.jpg" 
+         data-tallas="Unitalla 30-34">
+      <img src="sudadera/sudadera2.jpg" alt="Suéter Casual">
+      <h3>Sudadera</h3>
+      <p>Sudadera tejido de punto con cierre</p>
+      <p class="precio">$120</p>
+    </div>
+       
+
+      <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="suéter tejido de punto fino con botones" 
+         data-precio="$120" 
+         data-imagenes="sudadera/sueter.jpg,sudadera/sueter1.jpg,sudadera/sueter2.jpg,sudadera/sueter3.jpg,sudadera/sueter4.jpg,sudadera/sueter5.jpg,sudadera/sueter6.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="sudadera/sueter1.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido de punto fino con botones</p>
+      <p class="precio">$120</p>
+    </div>
+
+
+    <div class="card" 
+         data-nombre="Chaleco" 
+         data-descripcion="Chaleco peluche suave con bolsas" 
+         data-precio="$160" 
+         data-imagenes="chamarra/chaleco.jpg,chamarra/chaleco1.jpg,chamarra/chaleco2.jpg,chamarra/chaleco3.jpg,chamarra/chaleco4.jpg,chamarra/chaleco5.jpg" 
+         data-tallas="S,M,L">
+      <img src="chamarra/chaleco1.jpg" alt="Suéter Casual">
+      <h3>Chaleco</h3>
+      <p>Chaleco peluche suave con bolsas</p>
+      <p class="precio">$160</p>
+    </div>
+
+
+    <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="suéter tejido grueso cuello tortuga" 
+         data-precio="$130" 
+         data-imagenes="sudadera/cuello.jpg,sudadera/cuello1.jpg,sudadera/cuello2.jpg,sudadera/cuello3.jpg,sudadera/cuello4.jpg,sudadera/cuello5.jpg,sudadera/cuello6.jpg,sudadera/cuello7.jpg,sudadera/cuello8.jpg,sudadera/cuello9.jpg,sudadera/cuello10.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="sudadera/cuello1.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido grueso cuello tortuga</p>
+      <p class="precio">$130</p>
+    </div>
+
+
+       <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="suéter tejido grueso" 
+         data-precio="$130" 
+         data-imagenes="sudadera/tejido.jpg,sudadera/1.jpg,sudadera/2.jpg,sudadera/3.jpg,sudadera/4.jpg,sudadera/5.jpg,sudadera/6.jpg,sudadera/7.jpg,sudadera/8.jpg,sudadera/9.jpg,sudadera/10.jpg,sudadera/11.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="sudadera/1.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido grueso</p>
+      <p class="precio">$130</p>
+    </div>
+
+
+    
+
+       <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="suéter tejido peluche con billos" 
+         data-precio="$110" 
+         data-imagenes="sudadera/peluche.jpg,sudadera/peluche1.jpg,sudadera/peluche2.jpg,sudadera/peluche3.jpg,sudadera/peluche4.jpg,sudadera/peluche5.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="sudadera/peluche1.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido peluche con brillos </p>
+      <p class="precio">$110</p>
+    </div>
+
+  
+       <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="suéter tejido peluche con billos" 
+         data-precio="$110" 
+         data-imagenes="sudadera/peluche6.jpg,sudadera/peluche7.jpg,sudadera/peluche8.jpg,sudadera/peluche9.jpg,sudadera/peluche10.jpg,sudadera/peluche11.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="sudadera/peluche7.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido peluche con brillos </p>
+      <p class="precio">$110</p>
+    </div>
+
+<div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="suéter tejido jaspeado con cierre" 
+         data-precio="$100" 
+         data-imagenes="sudadera/jaspeado.jpg,sudadera/jaspeado1.jpg,sudadera/jaspeado2.jpg,sudadera/jaspeado3.jpg,sudadera/jaspeado4.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="sudadera/jaspeado1.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido jaspeado con cierre </p>
+      <p class="precio">$100</p>
+    </div>
+
+<div class="card" 
+         data-nombre="Abrigo" 
+         data-descripcion="Abrigo peluche grueso con forro y botones" 
+         data-precio="$190" 
+         data-imagenes="abrigo/abrigo.jpg,abrigo/abrigo1.jpg,abrigo/abrigo2.jpg,abrigo/abrigo3.jpg,abrigo/abrigo4.jpg,abrigo/abrigo5.jpg" 
+         data-tallas="M:30,L:32,XL:34">
+      <img src="abrigo/abrigo1.jpg" alt="Suéter Casual">
+      <h3>Abrigo </h3>
+      <p>Abrigo peluche grueso con forro y botones  </p>
+      <p class="precio">$190</p>
+    </div>
+
+
+    <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Suéter tejido peludito colores." 
+         data-precio="$100" 
+         data-imagenes="abrigo/colores.jpg,abrigo/colores1.jpg,abrigo/colores2.jpg,abrigo/colores3.jpg,abrigo/colores4.jpg,abrigo/colores5.jpg,abrigo/colores6.jpg,abrigo/colores7.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="abrigo/colores1.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido peludito colores  </p>
+      <p class="precio">$100</p>
+    </div>
+
+    
+    <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Suéter tejido de punto cuello simulación camisa de popelina." 
+         data-precio="$195" 
+         data-imagenes="abrigo/camisa.jpg,abrigo/camisa1.jpg,abrigo/camisa2.jpg,abrigo/camisa3.jpg,abrigo/camisa4.jpg,abrigo/camisa5.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="abrigo/camisa1.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido de punto cuello simulación camisa de popelina </p>
+      <p class="precio">$195</p>
+    </div>
+
+
+    
+    <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Ensamble tejido de punto grueso con gorro". 
+         data-precio="$140" 
+         data-imagenes="ensamble/1.jpg,ensamble/2.jpg,ensamble/3.jpg,ensamble/4.jpg,ensamble/5.jpg,ensamble/6.jpg,ensamble/7.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="ensamble/2.jpg" alt="Suéter Casual">
+      <h3>Ensamble</h3>
+      <p>Ensamble tejido de punto grueso con gorro </p>
+      <p class="precio">$140</p>
+    </div>
+
+        
+    <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Ensamble tejido inspo Gucci". 
+         data-precio="$130" 
+         data-imagenes="ensamble/gucci.jpg,ensamble/gucci2.jpg,ensamble/gucci3.jpg,ensamble/gucci4.jpg,ensamble/gucci5.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="ensamble/gucci1.jpg" alt="Suéter Casual">
+      <h3>Ensamble</h3>
+      <p>Ensamble tejido inspo Gucci</p>
+      <p class="precio">$130</p>
+    </div>
+
+    <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="sudadera polar suave con gorro " 
+         data-precio="$150" 
+         data-imagenes="chamarra/polar.jpg,chamarra/polar1.jpg,chamarra/polar2.jpg,chamarra/polar3.jpg,chamarra/polar4.jpg,chamarra/polar5.jpg,chamarra/polar6.jpg,chamarra/polar7.jpg"" 
+         data-tallas="Unitalla:30-34">
+      <img src="chamarra/polar1.jpg" alt="Suéter Casual">
+      <h3>Sudadera</h3>
+      <p>Sudadera polar suave con gorro </p>
+      <p class="precio">$150</p>
+    </div>
+  
+
+         
+    <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Ensamble tejido suave". 
+         data-precio="$170" 
+         data-imagenes="ensamble/suave.jpg,ensamble/suave1.jpg,ensamble/suave2.jpg,ensamble/suave3.jpg,ensamble/suave4.jpg,ensamble/suave5.jpg,ensamble/suave6.jpg,ensamble/suave7.jpg,ensamble/suave8.jpg,ensamble/suave9.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="ensamble/suave1.jpg" alt="Suéter Casual">
+      <h3>Ensamble</h3>
+      <p>Ensamble tejido inspo Gucci</p>
+      <p class="precio">$170</p>
+    </div>
+
+   <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Suéter tejido grueso trenza cuello V." 
+         data-precio="$130" 
+         data-imagenes="abrigo/trenza.jpg,abrigo/trenza1.jpg,abrigo/trenza2.jpg,abrigo/trenza3.jpg,abrigo/trenza4.jpg,abrigo/trenza5.jpg,abrigo/trenza6.jpg,abrigo/trenza7.jpg,abrigo/trenza8.jpg,abrigo/trenza9.jpg,abrigo/trenza10.jpg,abrigo/trenza11.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="abrigo/trenza1.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido grueso trenza cuello V</p>
+      <p class="precio">$130</p>
+    </div>
+
+
+  <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Suéter tejido suave jaspeado manga princesa." 
+         data-precio="$100" 
+         data-imagenes="sudadera/manga.jpg,sudadera/manga1.jpg,sudadera/manga2.jpg,sudadera/manga3.jpg,sudadera/manga4.jpg,sudadera/manga5.jpg,sudadera/manga6.jpg,sudadera/manga7.jpg,sudadera/manga8.jpg,sudadera/manga9.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="sudadera/manga1.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido suave jaspeado manga princesa</p>
+      <p class="precio">$100</p>
+    </div>
+
+
+
+  <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Suéter tejido suave confetti." 
+         data-precio="$100" 
+         data-imagenes="sudadera/confe.jpg,sudadera/confe1.jpg,sudadera/confe2.jpg,sudadera/confe3.jpg,sudadera/confe4.jpg,sudadera/confe5.jpg,sudadera/confe6.jpg,sudadera/confe7.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="sudadera/confe1.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido suave confetti</p>
+      <p class="precio">$100</p>
+    </div>
+
+
+
+  <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Suéter tejido con diseño." 
+         data-precio="$100" 
+         data-imagenes="diseño/diseño.jpg,diseño/diseño1.jpg,diseño/diseño2.jpg,diseño/diseño3.jpg,diseño/diseño4.jpg,diseño/diseño5.jpg,diseño/diseño6.jpg,diseño/diseño7.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="diseño/diseño1.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido con diseño</p>
+      <p class="precio">$100</p>
+    </div>
+
+
+
+  <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Suéter tejido con gorro." 
+         data-precio="$100" 
+         data-imagenes="sudadera/gorro.jpg,sudadera/gorro1.jpg,sudadera/gorro2.jpg,sudadera/gorro3.jpg,sudadera/gorro4.jpg,sudadera/gorro5.jpg,sudadera/gorro6.jpg,sudadera/gorro7.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="sudadera/gorro1.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido con gorro</p>
+      <p class="precio">$100</p>
+    </div>
+
+ <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Ensamble tejido de punto". 
+         data-precio="$130" 
+         data-imagenes="ensamble/punto.jpg,ensamble/punto1.jpg,ensamble/punto2.jpg,ensamble/punto3.jpg,ensamble/punto4.jpg,ensamble/punto5.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="ensamble/punto1.jpg" alt="Suéter Casual">
+      <h3>Ensamble</h3>
+      <p>Ensamble tejido de punto</p>
+      <p class="precio">$130</p>
+    </div>
+
+ <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Suéter tejido bicolor animal print." 
+         data-precio="$130" 
+         data-imagenes="bicolor/animal.jpg,bicolor/animal1.jpg,bicolor/animal2.jpg,bicolor/animal3.jpg,bicolor/animal4.jpg,bicolor/animal5.jpg,bicolor/animal6.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="bicolor/animal1.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido bicolor animal print</p>
+      <p class="precio">$130</p>
+    </div>
+
+    <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Suéter tejido bicolor." 
+         data-precio="$130" 
+         data-imagenes="bicolor/bicolor.jpg,bicolor/bicolor1.jpg,bicolor/bicolor2.jpg,bicolor/bicolor3.jpg,bicolor/bicolor4.jpg,bicolor/bicolor5.jpg,bicolor/bicolor6.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="bicolor/bicolor1.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido bicolor</p>
+      <p class="precio">$130</p>
+    </div>
+
+<div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Suéter tejido bicolor." 
+         data-precio="$130" 
+         data-imagenes="bicolor/corazon.jpg,bicolor/corazon1.jpg,bicolor/corazon2.jpg,bicolor/corazon3.jpg,bicolor/corazon4.jpg,bicolor/corazon5.jpg,bicolor/corazon6.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="bicolor/corazon1.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido bicolor</p>
+      <p class="precio">$130</p>
+    </div>
+
+<div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Suéter tejido bicolor." 
+         data-precio="$130" 
+         data-imagenes="bicolor/rayas.jpg,bicolor/raya1.jpg,bicolor/raya2.jpg,bicolor/raya3.jpg,bicolor/raya4.jpg,bicolor/raya5.jpg,bicolor/raya6.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="bicolor/raya2.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido bicolor</p>
+      <p class="precio">$130</p>
+    </div>
+
+
+<div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Suéter tejido bicolor." 
+         data-precio="$130" 
+         data-imagenes="bicolor/estrella.jpg,bicolor/estrella1.jpg,bicolor/estrella2.jpg,bicolor/estrella3.jpg,bicolor/estrella4.jpg,bicolor/estrella5.jpg,bicolor/estrella6.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="bicolor/estrella1.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido bicolor</p>
+      <p class="precio">$130</p>
+    </div>
+
+<div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Suéter tejido bicolor." 
+         data-precio="$130" 
+         data-imagenes="bicolor/hexa.jpg,bicolor/hexa1.jpg,bicolor/hexa2.jpg,bicolor/hexa3.jpg,bicolor/hexa4.jpg,bicolor/hexa5.jpg,bicolor/hexa6.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="bicolor/hexa2.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido bicolor</p>
+      <p class="precio">$130</p>
+    </div>
+
+    <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Suéter tejido bicolor." 
+         data-precio="$130" 
+         data-imagenes="bicolor/cora.jpg,bicolor/cora1.jpg,bicolor/cora2.jpg,bicolor/cora3.jpg,bicolor/cora4.jpg,bicolor/cora5.jpg,bicolor/cora6.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="bicolor/cora2.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido bicolor</p>
+      <p class="precio">$130</p>
+    </div>
+
+      <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Suéter tejido bicolor." 
+         data-precio="$130" 
+         data-imagenes="bicolor/cuadro.jpg,bicolor/cuadro1.jpg,bicolor/cuadro2.jpg,bicolor/cuadro3.jpg,bicolor/cuadro4.jpg,bicolor/cuadro5.jpg,bicolor/cuadro6.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="bicolor/cuadro1.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido bicolor</p>
+      <p class="precio">$130</p>
+    </div>
+
+        <div class="card" 
+         data-nombre="Suéter" 
+         data-descripcion="Suéter tejido grueso cuello tortuga." 
+         data-precio="$130" 
+         data-imagenes="chamarra/tortuga.jpg,chamarra/tortuga1.jpg,chamarra/tortuga2.jpg,chamarra/tortuga3.jpg,chamarra/tortuga4.jpg,chamarra/tortuga5.jpg,chamarra/tortuga6.jpg,chamarra/tortuga7.jpg,chamarra/tortuga8.jpg,chamarra/tortuga9.jpg,chamarra/tortuga9.jpg" 
+         data-tallas="Unitalla:30-34">
+      <img src="chamarra/tortuga1.jpg" alt="Suéter Casual">
+      <h3>Suéter</h3>
+      <p>Suéter tejido grueso cuello tortuga</p>
+      <p class="precio">$130</p>
+    </div>
+
+<div class="card" 
+         data-nombre="Chamarra" 
+         data-descripcion="Chamarra corta borrega delgada con forro y cierre." 
+         data-precio="$130" 
+         data-imagenes="chamarra/borrego.jpg,chamarra/borrego1.jpg,chamarra/borrego2.jpg,chamarra/borrego3.jpg,chamarra/borrego4.jpg,chamarra/borrego5.jpg,chamarra/borrego6.jpg,chamarra/borrego7.jpg" 
+         data-tallas="M:20,L:32,XL:34">
+      <img src="chamarra/borrego1.jpg" alt="Suéter Casual">
+      <h3>Chamarra</h3>
+      <p>Chamarra corta borrega deldaga con forro y cierre</p>
+      <p class="precio">$130</p>
+    </div>
+
+    <div class="card" 
+         data-nombre="Chamarra" 
+         data-descripcion="Chamarra polar suave con cierre." 
+         data-precio="$170" 
+         data-imagenes="chamarra/suave.jpg,chamarra/suave1.jpg,chamarra/suave2.jpg,chamarra/suave3.jpg,chamarra/suave4.jpg,chamarra/suave5.jpg,chamarra/suave6.jpg,chamarra/suave7.jpg" 
+         data-tallas="L:32,XL:34">
+      <img src="chamarra/suave1.jpg" alt="Suéter Casual">
+      <h3>Chamarra</h3>
+      <p>Chamarra polar suave con cierre</p>
+      <p class="precio">$170</p>
+    </div>
+
+     <div class="card" 
+         data-nombre="Chamarra" 
+         data-descripcion="Chaleco polar suave con cierre." 
+         data-precio="$160" 
+         data-imagenes="chaleco/polar.jpg,chaleco/polar1.jpg,chaleco/polar2.jpg,chaleco/polar3.jpg,chaleco/polar4.jpg,chaleco/polar5.jpg,chaleco/polar.jpg,chaleco/polar7.jpg" 
+         data-tallas="S/M:32,L/XL:34">
+      <img src="chaleco/polar1.jpg" alt="Suéter Casual">
+      <h3>Chaleco</h3>
+      <p>Chaleco polar suave con cierre</p>
+      <p class="precio">$160</p>
+    </div>
+
+
+
+
+  </div>
+</section>
+    </div>
+  </section>
+
+  <a class="back-btn" href="mujer.html">← Regresar</a>
+
+  <!-- MODAL -->
+  <div id="productModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <div class="carousel">
+        <img id="modalImg" src="" alt="">
+        <a class="prev">&#10094;</a>
+        <a class="next">&#10095;</a>
+      </div>
+      <div class="modal-details">
+        <h3 id="modalNombre"></h3>
+        <p id="modalDescripcion"></p>
+        <div><strong>Color:</strong><div class="colors" id="colorContainer"></div></div>
+        <div><strong>Tallas:</strong><div class="sizes" id="sizeContainer"></div></div>
+        <p class="precio" id="modalPrecio"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="social-fixed">
+      <a href="https://www.facebook.com/juniordflorescompany" target="_blank"><img src="logo/facebook.png" alt="Facebook"></a>
+      <a href="https://www.tiktok.com/@juniordflores?_t=ZS-8zcmsfaUGH4&_r=1" target="_blank"><img src="logo/tik-tok.png" alt="TikTok"></a>
+      <a href="tel:55 7981 3965"><img src="logo/whatsapp (2).png" alt="Teléfono"></a>
+    </div>
+  </footer>
+
+  <a href="#" id="scrollTop"><i class="fas fa-arrow-up"></i></a>
+
+  <script>
+    const scrollTopBtn = document.getElementById('scrollTop');
+    window.addEventListener('scroll', () => { scrollTopBtn.style.display = window.scrollY > 300 ? 'flex' : 'none'; });
+    scrollTopBtn.addEventListener('click', e => { e.preventDefault(); window.scrollTo({ top:0, behavior:'smooth' }); });
+
+    const modal = document.getElementById("productModal");
+    const modalImg = document.getElementById("modalImg");
+    const modalNombre = document.getElementById("modalNombre");
+    const modalDescripcion = document.getElementById("modalDescripcion");
+    const modalPrecio = document.getElementById("modalPrecio");
+    const colorContainer = document.getElementById("colorContainer");
+    const sizeContainer = document.getElementById("sizeContainer");
+    const closeBtn = document.querySelector(".close");
+    let images = [], currentIndex = 0;
+
+    document.querySelectorAll('.card').forEach(card=>{
+      card.addEventListener('click', ()=>{
+        modal.style.display = "block";
+        modalNombre.textContent = card.dataset.nombre;
+        modalDescripcion.textContent = card.dataset.descripcion;
+        modalPrecio.textContent = card.dataset.precio;
+
+        images = card.dataset.imagenes.split(",");
+        currentIndex = 0;
+        modalImg.src = images[currentIndex];
+
+        colorContainer.innerHTML = "";
+        images.forEach((imgSrc, idx)=>{
+          const sw = document.createElement("div");
+          sw.className = "color-swatch" + (idx===0?" active":"");
+          const img = document.createElement("img");
+          img.src = imgSrc;
+          sw.appendChild(img);
+          sw.addEventListener("click", ()=>{
+            currentIndex = idx;
+            modalImg.src = imgSrc;
+            colorContainer.querySelectorAll('.color-swatch').forEach(x=>x.classList.remove('active'));
+            sw.classList.add("active");
+          });
+          colorContainer.appendChild(sw);
+        });
+
+        sizeContainer.innerHTML = "";
+        (card.dataset.tallas||"").split(",").forEach(t=>{
+          if(t.trim()){
+            const btn = document.createElement("button");
+            btn.className = "size-btn";
+            btn.textContent = t;
+            btn.addEventListener("click", ()=>{
+              sizeContainer.querySelectorAll('.size-btn').forEach(x=>x.classList.remove('active'));
+              btn.classList.add('active');
+            });
+            sizeContainer.appendChild(btn);
+          }
+        });
+      });
+    });
+
+    document.querySelector(".prev").addEventListener("click", ()=>{
+      if(images.length > 0){ currentIndex = (currentIndex - 1 + images.length) % images.length; modalImg.src = images[currentIndex]; }
+    });
+    document.querySelector(".next").addEventListener("click", ()=>{
+      if(images.length > 0){ currentIndex = (currentIndex + 1) % images.length; modalImg.src = images[currentIndex]; }
+    });
+
+    closeBtn.onclick = ()=> modal.style.display = "none";
+    window.onclick = e => { if(e.target == modal){ modal.style.display = "none"; } };
+  </script>
+
+</body>
+</html>

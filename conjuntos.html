@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Partes Bajas - Junior D'Flores</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Fuentes y estilos externos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'verdana', sans-serif; margin:0; padding:0; background:#fdfdfd; color:#333; line-height:1.6; }
+
+    /* ====== ENCABEZADO CURVADO CORAL ====== */
+    header {
+      position: relative;
+      background: #fff;
+      overflow: visible;
+      height: 180px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      padding-bottom: 20px;
+    }
+
+     .fondo-linea {
+      position: absolute;
+      top: 0;
+      left: 0;          /* Limita el SVG al borde izquierdo */
+      width: 100%;      /* No sobresalga del header */
+      height: 100%;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .fondo-linea path {
+      fill: none;
+      stroke: url(#gradCoral);
+      stroke-width: 60;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-opacity: 0.9;
+    }
+
+    .titulo-logo {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .titulo {
+      font-family: 'Playfair Display', serif;
+      font-size: 4em;
+      letter-spacing: 5px;
+      color: #222;
+      text-transform: uppercase;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.15);
+      margin: 0;
+    }
+
+    .logo img {
+      width: 130px;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    /* ====== MENÚ ====== */
+    nav {
+      background: #FF8C8C;
+      padding: 12px 0;
+      text-align: center;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+      z-index: 1000;
+    }
+
+    nav a {
+      color: #fff;
+      margin: 0 18px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.05em;
+      transition: 0.3s;
+      position: relative;
+      text-transform: uppercase;
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: #FFE8DB;
+      transition: width 0.3s;
+    }
+
+    nav a:hover {
+      color: #FFE8DB;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    /* ====== SECCIONES ====== */
+    section { padding:60px 20px; max-width:1100px; margin:auto; }
+    section h2 { text-align:center; margin-bottom:25px; font-size:2.2em; position:relative; }
+    section h2::after { content:""; display:block; width:80px; height:4px; background:#F08787; margin:10px auto 0; border-radius:2px; }
+
+    .productos { display:grid; grid-template-columns:repeat(3, 1fr); gap:30px; }
+    .card { background:transparent; padding:0; text-align:center; cursor:pointer; transition:0.3s; }
+    .card:hover { transform:translateY(-5px); }
+    .card img { max-width:80%; height:auto; border-radius:12px; object-fit:cover; margin:0 auto; display:block; }
+    .card h3 { margin:10px 0 5px; }
+    .precio { font-weight:600; color:#E07A7A; }
+    .back-btn { display:block; margin:40px auto 0; padding:12px 25px; background:#E07A7A; color:#fff; border-radius:10px; text-decoration:none; text-align:center; width:max-content; }
+    .back-btn:hover { background:#F28C8C; }
+
+    /* ====== MODAL ====== */
+    .modal { display:none; position:fixed; z-index:2000; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); overflow:auto; padding-top:40px; }
+    .modal-content { background:#fff; margin:auto; padding:20px; border-radius:15px; max-width:900px; display:flex; flex-direction:row; gap:20px; position:relative; flex-wrap:wrap; }
+    .close { position:absolute; top:10px; right:20px; font-size:28px; cursor:pointer; }
+    .close:hover { color:#E07A7A; }
+    .carousel { position:relative; flex:1; min-width:250px; text-align:center; }
+    .carousel img { width:80%; max-width:400px; height:auto; border-radius:12px; object-fit:cover; display:block; margin:0 auto; }
+    .prev, .next { cursor:pointer; position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:#fff; padding:10px; border-radius:50%; font-size:20px; user-select:none; }
+    .prev { left:10px; }
+    .next { right:10px; }
+    .modal-details { flex:1; min-width:250px; }
+    .modal-details h3 { margin:6px 0; }
+    .modal-details p { margin:6px 0; color:#666; }
+    .modal-details .precio { font-size:1.3em; font-weight:bold; color:#E07A7A; margin:12px 0; }
+    .colors, .sizes { display:flex; gap:10px; margin-top:8px; flex-wrap:wrap; }
+    .color-swatch { width:50px; height:50px; border-radius:8px; overflow:hidden; cursor:pointer; border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,.15); transition:0.2s; }
+    .color-swatch img { width:100%; height:100%; object-fit:cover; }
+    .color-swatch.active { outline:3px solid #E07A7A; }
+    .size-btn { padding:8px 12px; border:1px solid #ddd; border-radius:8px; background:#fff; cursor:pointer; font-weight:600; transition:0.2s; }
+    .size-btn.active { background:#E07A7A; color:#fff; border-color:#E07A7A; }
+
+    /* ====== FOOTER ====== */
+    footer { background:#F08787; color:#fff; text-align:center; padding:40px 20px; margin-top:40px; }
+
+    /* ====== REDES FLOTANTES ====== */
+    .social-fixed { position: fixed; right: 20px; top: 40%; display: flex; flex-direction: column; gap: 15px; z-index: 999; }
+    .social-fixed a img { width: 50px; height: 50px; object-fit: contain; }
+
+    /* ====== BOTÓN SUBIR ====== */
+    #scrollTop { position:fixed; bottom:20px; right:20px; z-index:999; display:none; align-items:center; justify-content:center; width:50px; height:50px; background:#F08787; color:#fff; border-radius:50%; font-size:1.5em; cursor:pointer; box-shadow:0 3px 10px rgba(0,0,0,0.2); transition:0.3s; }
+    #scrollTop:hover { background:#FFE8DB; color:#333; }
+
+    /* ====== RESPONSIVIDAD ====== */
+    @media (max-width:1024px) { .productos { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width:800px){ .modal-content { flex-direction: column; max-width:92%; } nav a { margin:0 8px; } .productos { grid-template-columns:1fr; } }
+    @media (max-width:500px){
+      header { flex-direction: column; align-items:center; text-align:center; padding:15px; }
+      .titulo { font-size:2.5em; }
+      .logo img { width:110px; height:110px; }
+      nav a { font-size:0.95em; display:block; margin:5px 0; }
+      .card img { max-width:95%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ENCABEZADO CURVADO CORAL -->
+  <header>
+    <svg class="fondo-linea" viewBox="0 0 1600 180" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="gradCoral" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#FF8C8C" stop-opacity="0.1"/>
+          <stop offset="15%" stop-color="#FF8C8C" stop-opacity="0.5"/>
+          <stop offset="50%" stop-color="#FF8C8C" stop-opacity="0.6"/>
+          <stop offset="85%" stop-color="#FF8C8C" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#FF8C8C" stop-opacity="0.1"/>
+        </linearGradient>
+      </defs>
+      <path d="M0,140 C300,10 600,170 900,90 S1300,60 1600,140" />
+    </svg>
+
+    <div class="titulo-logo">
+      <h1 class="titulo">Junior D'Flores</h1>
+      <div class="logo">
+        <img src="logo/logo.png" alt="Logo de la tienda">
+      </div>
+    </div>
+  </header>
+
+  <!-- MENÚ -->
+  <nav>
+    <a href="index.html">Inicio</a>
+    <a href="mujer.html">Categorías</a>
+  </nav>
+
+  <!-- SECCIÓN DE PRODUCTOS -->
+  <section>
+    <h2>Partes Bajas</h2>
+    <div class="productos">
+ 
+
+        <!-- CARD 6 -->
+    <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set tejido de punto fino con cierre." 
+         data-precio="$270" 
+         data-imagenes="setcierre/set1.jpg,setcierre/set2.jpg,setcierre/set3.jpg,setcierre/set4.jpg,setcierre/set5.jpg,setcierre/set6.jpg,setcierre/set7.jpg,setcierre/set8.jpg,setcierre/set9.jpg,setcierre/set10.jpg,setcierre/set11.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="setcierre/set2.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set tejido de punto fino con bordado.</p>
+      <p class="precio">$270</p>
+    </div>
+
+           <!-- CARD 7 -->
+    <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set tejido de punto fino con botones." 
+         data-precio="$280" 
+         data-imagenes="setboton/1.jpg,setboton/2.jpg,setboton/3.jpg,setboton/4.jpg,setboton/5.jpg,setboton/6.jpg,setboton/7.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="setboton/2.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set tejido de punto fino con botones.</p>
+      <p class="precio">$280</p>
+    </div>
+
+              <!-- CARD 7 -->
+    <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set tejido de punto fino bicolor." 
+         data-precio="$270" 
+         data-imagenes="set/bicolor.jpg,set/bicolor1.jpg,set/bicolor2.jpg,set/bicolor3.jpg,set/bicolor4.jpg,set/bicolor5.jpg,set/bicolor6.jpg,set/bicolor7.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="set/bicolor1.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set tejido de punto fino bicolor.</p>
+      <p class="precio">$270</p>
+    </div>
+
+                 <!-- CARD 7 -->
+    <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set tejido de punto fino bicolor con gorro y cierre." 
+         data-precio="$270" 
+         data-imagenes="setcierre/8.jpg,setcierre/9.jpg,setcierre/10.jpg,setcierre/11.jpg,setcierre/12.jpg,setcierre/13.jpg,setcierre/14.jpg,setcierre/15.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="setcierre/9.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set tejido de punto fino bicolor con gorro y cierre.</p>
+      <p class="precio">$270</p>
+    </div>
+
+
+
+             <!-- CARD 7 -->
+    <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set tejido de punto fino con botones." 
+         data-precio="$280" 
+         data-imagenes="setboton/boton.jpg,setboton/boton1.jpg,setboton/boton2.jpg,setboton/boton3.jpg,setboton/boton4.jpg,setboton/boton5.jpg,setboton/boton6.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="setboton/boton1.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set tejido de punto fino con botones.</p>
+      <p class="precio">$280</p>
+    </div>
+
+
+                 <!-- CARD 7 -->
+    <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set tejido de punto fino bicolor con gorro y cierre." 
+         data-precio="$270" 
+         data-imagenes="set/tejido.jpg,set/tejido1.jpg,set/tejido2.jpg,set/tejido3.jpg,set/tejido4.jpg,set/tejido5.jpg,set/tejido6.jpg,set/tejido7.jpg,set/tejido8.jpg,set/tejido9.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="set/tejido1.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set tejido de punto fino bicolor con gorro y cierre.</p>
+      <p class="precio">$270</p>
+    </div>
+
+
+                    <!-- CARD 7 -->
+    <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set tejido de punto grueso cuello sport." 
+         data-precio="$270" 
+         data-imagenes="set/cuello.jpg,set/cuello1.jpg,set/cuello2.jpg,set/cuello3.jpg,set/cuello4.jpg,set/cuello5.jpg,set/cuello6.jpg,set/cuello7.jpg,set/cuello8.jpg,set/cuello9.jpg,set/cuello10.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="set/cuello1.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set tejido de punto grueso cuello sport.</p>
+      <p class="precio">$270</p>
+    </div>
+
+               <!-- CARD 7 -->
+    <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set tejido de punto fino con cierre." 
+         data-precio="$270" 
+         data-imagenes="setcierre/cierre.jpg,setcierre/cierre1.jpg,setcierre/cierre2.jpg,setcierre/cierre3.jpg,setcierre/cierre4.jpg,setcierre/cierre5.jpg,setcierre/cierre6.jpg,setcierre/cierre7.jpg,setcierre/cierre8.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="setcierre/cierre1.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set tejido de punto fino con cierre.</p>
+      <p class="precio">$270</p>
+    </div>
+
+
+    
+               <!-- CARD 7 -->
+    <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set chalis fino jareta ajustable." 
+         data-precio="$190" 
+         data-imagenes="set/jareta.jpg,set/jareta1.jpg,set/jareta2.jpg,set/jareta3.jpg,set/jareta4.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="set/jareta1.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set chalis fino jareta ajustable.</p>
+      <p class="precio">$190</p>
+    </div>
+
+
+                <!-- CARD 7 -->
+    <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set tejido de punto fino con detalles de mezclilla." 
+         data-precio="$300" 
+         data-imagenes="mezclilla/mezclilla.jpg,mezclilla/mezclilla1.jpg,mezclilla/mezclilla2.jpg,mezclilla/mezclilla3.jpg,mezclilla/mezclilla4.jpg,mezclilla/mezclilla5.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="mezclilla/mezclilla1.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set tejido de punto fino con detalles de mezclilla.</p>
+      <p class="precio">$300</p>
+    </div>
+
+               <!-- CARD 7 -->
+    <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set algodón fino con detalle de encaje." 
+         data-precio="$280" 
+         data-imagenes="pans/algodon.jpg,pans/algodon1.jpg,pans/algodon2.jpg,pans/algodon3.jpg,pans/algodon4.jpg,pans/algodon5.jpg,pans/algodon6.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="pans/algodon1.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set algodón fino con detalle de encaje.</p>
+      <p class="precio">$280</p>
+    </div>
+
+
+    <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set tejido fino grueso con flor bordada." 
+         data-precio="$300" 
+         data-imagenes="pans/flor.jpg,pans/flor1.jpg,pans/flor2.jpg,pans/flor3.jpg,pans/flor4.jpg,pans/flor5.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="pans/flor1.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set tejido fino grueso con flor bordada.</p>
+      <p class="precio">$300</p>
+    </div>
+
+
+    <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set tejido fino liso,vestido tableado y chaleco." 
+         data-precio="$210" 
+         data-imagenes="setvestido/vestido.jpg,setvestido/vestido1.jpg,setvestido/vestido2.jpg,setvestido/vestido3.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="setvestido/vestido1.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set tejido fino liso,vestido tableado y chaleco.</p>
+      <p class="precio">$210</p>
+    </div>
+
+
+     <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set tejido fino falda con flor." 
+         data-precio="$200" 
+         data-imagenes="setvestido/falda1.jpg,setvestido/falda2.jpg,setvestido/falda3.jpg,setvestido/falda4.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="setvestido/falda1.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set tejido fino falda con flor.</p>
+      <p class="precio">$200</p>
+    </div>
+
+
+     <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set tejido de punto fino con botones." 
+         data-precio="$280" 
+         data-imagenes="pans/botones.jpg,pans/botones1.jpg,pans/botones2.jpg,pans/botones3.jpg,pans/botones4.jpg,pans/botones5.jpg,pans/botones6.jpg,pans/botones7.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="pans/botones1.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set tejido de punto fino con botones.</p>
+      <p class="precio">$280</p>
+    </div>
+
+
+     <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set tejido de punto fino cuello sport con bordado." 
+         data-precio="$310" 
+         data-imagenes="set/setcuello.jpg,set/setcuello1.jpg,set/setcuello2.jpg,set/setcuello3.jpg,set/setcuello4.jpg,set/setcuello5.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="set/setcuello1.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set tejido de punto fino cuello sport con bordado.</p>
+      <p class="precio">$310</p>
+    </div>
+
+
+     <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set tejido de punto fino con botones." 
+         data-precio="$300" 
+         data-imagenes="setboton/setboton.jpg,setboton/botones1.jpg,setboton/botones2.jpg,setboton/botones3.jpg,setboton/botones4.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="setboton/botones1.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set tejido de punto fino con botones.</p>
+      <p class="precio">$300</p>
+    </div>
+
+      <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set tejido de punto fino con franjas." 
+         data-precio="$310" 
+         data-imagenes="set/franjas.jpg,set/franjas1.jpg,set/franjas2.jpg,set/franjas3.jpg,set/franjas4.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="set/franjas1.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set tejido de punto fino con franjas.</p>
+      <p class="precio">$310</p>
+    </div>
+
+      <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set tejido de punto fino con cierre." 
+         data-precio="$300" 
+         data-imagenes="setcierre/cierre9.jpg,setcierre/cierre10.jpg,setcierre/cierre11.jpg,setcierre/cierre12.jpg,setcierre/cierre13.jpg,setcierre/cierre14.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="setcierre/cierre10.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set tejido de punto fino con cierre.</p>
+      <p class="precio">$300</p>
+    </div>
+
+   <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set tejido de punto con botones." 
+         data-precio="$270" 
+         data-imagenes="setboton/punto.jpg,setboton/punto1.jpg,setboton/punto2.jpg,setboton/punto3.jpg,setboton/punto4.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-34">
+      <img src="setboton/punto1.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set tejido de punto con botones.</p>
+      <p class="precio">$270</p>
+    </div>
+
+  <div class="card" 
+         data-nombre="Conjunto" 
+         data-descripcion="Set tejido de punto con botones." 
+         data-precio="$310" 
+         data-imagenes="setboton/moño.jpg,setboton/moño1.jpg,setboton/moño2.jpg,setboton/moño3.jpg,setboton/moño4.jpg,setboton/moño5.jpg" 
+         data-colors="Azul Oscuro,Negro" 
+         data-tallas="unitalla 30-36">
+      <img src="setboton/moño1.jpg" alt="Jean Skinny">
+      <h3>Set</h3>
+      <p>Set tejido de punto con botones.</p>
+      <p class="precio">$310</p>
+    </div>
+
+
+
+
+
+  </section>
+
+  <a class="back-btn" href="mujer.html">← Regresar</a>
+
+  <!-- MODAL -->
+  <div id="productModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <div class="carousel">
+        <img id="modalImg" src="" alt="">
+        <a class="prev">&#10094;</a>
+        <a class="next">&#10095;</a>
+      </div>
+      <div class="modal-details">
+        <h3 id="modalNombre"></h3>
+        <p id="modalDescripcion"></p>
+        <div><strong>Color:</strong><div class="colors" id="colorContainer"></div></div>
+        <div><strong>Tallas:</strong><div class="sizes" id="sizeContainer"></div></div>
+        <p class="precio" id="modalPrecio"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="social-fixed">
+      <a href="https://www.facebook.com/juniordflorescompany" target="_blank"><img src="logo/facebook.png "alt="Facebook"></a>
+      <a href="https://www.tiktok.com/@juniordflores?_t=ZS-8zcmsfaUGH4&_r=1" target="_blank"><img src="logo/tik-tok.png" alt="TikTok"></a>
+      <a href="tel:55 7981 3965"><img src="logo/whatsapp (2).png" alt="Teléfono"></a>
+    </div>
+  </footer>
+
+  <a href="#" id="scrollTop"><i class="fas fa-arrow-up"></i></a>
+
+  <script>
+    // Botón subir
+    const scrollTopBtn = document.getElementById('scrollTop');
+    window.addEventListener('scroll', () => { scrollTopBtn.style.display = window.scrollY > 300 ? 'flex' : 'none'; });
+    scrollTopBtn.addEventListener('click', e => { e.preventDefault(); window.scrollTo({ top:0, behavior:'smooth' }); });
+
+    // Modal productos
+    const modal = document.getElementById("productModal");
+    const modalImg = document.getElementById("modalImg");
+    const modalNombre = document.getElementById("modalNombre");
+    const modalDescripcion = document.getElementById("modalDescripcion");
+    const modalPrecio = document.getElementById("modalPrecio");
+    const colorContainer = document.getElementById("colorContainer");
+    const sizeContainer = document.getElementById("sizeContainer");
+    const closeBtn = document.querySelector(".close");
+    let images = [], currentIndex = 0;
+
+    document.querySelectorAll('.card').forEach(card=>{
+      card.addEventListener('click', ()=>{
+        modal.style.display = "block";
+        modalNombre.textContent = card.dataset.nombre;
+        modalDescripcion.textContent = card.dataset.descripcion;
+        modalPrecio.textContent = card.dataset.precio;
+
+        images = card.dataset.imagenes.split(",");
+        currentIndex = 0;
+        modalImg.src = images[currentIndex];
+
+        colorContainer.innerHTML = "";
+        images.forEach((imgSrc, idx)=>{
+          const sw = document.createElement("div");
+          sw.className = "color-swatch" + (idx===0?" active":"");
+          const img = document.createElement("img");
+          img.src = imgSrc;
+          sw.appendChild(img);
+          sw.addEventListener("click", ()=>{
+            currentIndex = idx;
+            modalImg.src = imgSrc;
+            colorContainer.querySelectorAll('.color-swatch').forEach(x=>x.classList.remove('active'));
+            sw.classList.add("active");
+          });
+          colorContainer.appendChild(sw);
+        });
+
+        sizeContainer.innerHTML = "";
+        (card.dataset.tallas||"").split(",").forEach(t=>{
+          if(t.trim()){
+            const btn = document.createElement("button");
+            btn.className = "size-btn";
+            btn.textContent = t;
+            btn.addEventListener("click", ()=>{
+              sizeContainer.querySelectorAll('.size-btn').forEach(x=>x.classList.remove('active'));
+              btn.classList.add('active');
+            });
+            sizeContainer.appendChild(btn);
+          }
+        });
+      });
+    });
+
+    document.querySelector(".prev").addEventListener("click", ()=>{
+      if(images.length > 0){ currentIndex = (currentIndex - 1 + images.length) % images.length; modalImg.src = images[currentIndex]; }
+    });
+    document.querySelector(".next").addEventListener("click", ()=>{
+      if(images.length > 0){ currentIndex = (currentIndex + 1) % images.length; modalImg.src = images[currentIndex]; }
+    });
+
+    closeBtn.onclick = ()=> modal.style.display = "none";
+    window.onclick = e => { if(e.target == modal){ modal.style.display = "none"; } };
+  </script>
+
+</body>
+</html>
